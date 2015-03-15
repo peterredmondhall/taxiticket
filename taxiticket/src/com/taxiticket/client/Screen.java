@@ -63,6 +63,8 @@ public class Screen extends Composite
 //        step.getContent().setVisible(false);
 
     }
+    
+    
 
     @Override
     public void setHeight(String height)

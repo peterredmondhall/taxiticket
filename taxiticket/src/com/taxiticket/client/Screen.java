@@ -36,18 +36,12 @@ public class Screen extends Composite
     @UiField
     HTML progressBar;
 
-    @UiField
-    Button prev;
-    @UiField
-    Button next;
-
     public Screen()
     {
         initWidget();
         steps.clear();
         header.clear();
-        mainPanel.setVisible(false);
-        next.ensureDebugId("button_next");
+        //mainPanel.setVisible(false);
     }
 
     protected void initWidget()
@@ -57,10 +51,10 @@ public class Screen extends Composite
 
     public void add(Step step)
     {
-//        HTML headerHTML = new HTML((stepList.size() + 1) + ". " + step.getCaption());
-//        header.add(headerHTML);
-//
-//        step.getContent().setVisible(false);
+        HTML headerHTML = new HTML(step.getCaption());
+        header.add(headerHTML);
+        steps.add(step.getContent());
+        step.getContent().setVisible(true);
 
     }
     
@@ -81,8 +75,7 @@ public class Screen extends Composite
 
     public void init(Step step)
     {
-      HTML headerHTML = new HTML("Caption XXX");
-
+      add(step);
         mainPanel.setVisible(true);
 
     }

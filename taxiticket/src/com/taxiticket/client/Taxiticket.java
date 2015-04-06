@@ -10,10 +10,13 @@ import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.taxiticket.client.order.OrderStep;
 import com.taxiticket.client.order.Step;
 import com.taxiticket.client.resources.ClientMessages;
+import com.taxiticket.client.service.TaxiticketService;
+import com.taxiticket.client.service.TaxiticketServiceAsync;
 import com.taxiticket.shared.BookingInfo;
 import com.taxiticket.shared.StatInfo.Update;
 
@@ -28,32 +31,32 @@ public class Taxiticket implements EntryPoint
     public static final TaxiticketServiceAsync SERVICE = GWT.create(TaxiticketService.class);
     public static com.taxiticket.client.resources.ClientMessages MESSAGES = GWT.create(ClientMessages.class);
 
-    private OrderStep orderStep;
+    private static OrderStep orderStep;
 
     private static Long SESSION_IDENT = Double.doubleToLongBits(Math.random());
     private Screen screen;
-    public static BookingInfo BOOKINGINFO;
+    public static BookingInfo BOOKINGINFO = new BookingInfo();
     /**
      * This is the entry point method.
      */
     @Override
     public void onModuleLoad()
     {
-        Window.setTitle("taxisurfr");
+        Window.setTitle("taxiticket");
 
         Screen.SCREEN_WIDTH = Window.getClientWidth();
         Screen.SCREEN_HEIGHT = Window.getClientHeight();
 
         screen = new Screen();
 
-        OrderStep orderStep = new OrderStep();
+        orderStep = new OrderStep();
         String shareId = Window.Location.getParameter("share");
         String review = Window.Location.getParameter("review");
         String nick = Window.Location.getParameter("nick");
         String defaultuser = Window.Location.getParameter("defaultagent");
         String routeId = Window.Location.getParameter("route");
         
-        completeSetup(new OrderStep());
+        completeSetup(orderStep);
         
 
     }
@@ -83,6 +86,32 @@ public class Taxiticket implements EntryPoint
         catch (RequestException e)
         {
         }
+    }
+        
+        private static void showPdf(BookingInfo bookingInfo)
+        {
+            String protocol = Window.Location.getProtocol();
+            String url = protocol + "//" + Window.Location.getHost() + "/ticket?order=" + bookingInfo.getId();
+            RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
+
+            try
+            {
+                Request response = builder.sendRequest(null, new RequestCallback()
+                {
+                    @Override
+                    public void onError(Request request, Throwable exception)
+                    {
+                    }
+
+                    @Override
+                    public void onResponseReceived(Request request, Response response)
+                    {
+                    }
+                });
+            }
+            catch (RequestException e)
+            {
+            }
 
 //        
 //
@@ -109,6 +138,41 @@ public class Taxiticket implements EntryPoint
 
 	public static void sendStat(String string, Update type) {
 		// TODO Auto-generated method stub
+		
+	}
+
+
+	public static void book() 
+	{
+	        try
+	        {
+	            SERVICE.createBooking(BOOKINGINFO, new AsyncCallback<BookingInfo>()
+	            {
+
+	                @Override
+	                public void onSuccess(BookingInfo bookingInfo)
+	                {
+	                	if (bookingInfo.isPaymentSuccessful())
+	                	{
+	                		//showPdf(bookingInfo);
+	                		Window.Location.assign("ticket?order="+bookingInfo.getId());
+	                	} else
+	                	{
+	                		orderStep.setStatus(bookingInfo);
+	                	}
+	                }
+
+	                @Override
+	                public void onFailure(Throwable caught)
+	                {
+	                }
+	            });
+	        }
+	        catch (Exception ex)
+	        {
+
+	        }
+	    
 		
 	}
 

@@ -10,10 +10,35 @@ public class BookingInfo extends Info
 
     private String name;
     private String email;
-    private Long id;
+    private String iban;
+    private String pickup;
+    private String dropoff;
+ 
+	private double[] price;
+	private Long id;
 
+	private boolean paymentSuccessful;
+	private String paymentResponseCode;
+	
+	
 
-    @Override
+    public boolean isPaymentSuccessful() {
+		return paymentSuccessful;
+	}
+
+	public void setPaymentSuccessful(boolean paymentSuccessful) {
+		this.paymentSuccessful = paymentSuccessful;
+	}
+
+	public String getPaymentResponseCode() {
+		return paymentResponseCode;
+	}
+
+	public void setPaymentResponseCode(String paymentResponseCode) {
+		this.paymentResponseCode = paymentResponseCode;
+	}
+
+	@Override
     public Long getId()
     {
         return id;
@@ -67,12 +92,50 @@ public class BookingInfo extends Info
         this.email = email;
     }
 
+    public String getIban() {
+		return iban;
+	}
+
+	public void setIban(String iban) {
+		this.iban = iban;
+	}
+
 
     public String getOrderNo()
     {
         int len = id.toString().length();
         return id.toString().substring(len - 5, len - 1);
     }
+
+	public void setPrice(double distance, double[] price) {
+		this.price = price;
+		this.distance = distance;		
+	}
+
+	   public String getPickup() {
+			return pickup;
+		}
+
+		public void setPickup(String pickup) {
+			this.pickup = pickup;
+		}
+
+		public String getDropoff() {
+			return dropoff;
+		}
+
+		public void setDropoff(String dropoff) {
+			this.dropoff = dropoff;
+		}
+
+		private double distance;
+	    public double getDistance() {
+			return distance;
+		}
+
+		public double[] getPrice() {
+			return price;
+		}
 
 
 }

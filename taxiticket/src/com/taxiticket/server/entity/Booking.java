@@ -8,37 +8,48 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import org.apache.http.conn.routing.RouteInfo;
-
 import com.google.appengine.api.datastore.Key;
 import com.taxiticket.shared.BookingInfo;
+import com.taxiticket.shared.BookingInfo.OrderStatus;
 import com.taxiticket.shared.Info;
 
 @Entity
 public class Booking<T extends Info, K extends TaxiticketEntity> extends TaxiticketEntity implements Serializable, Comparable<Booking>
 {
     private String name;
+    private String dateText;
     private String email;
-    private String iban;
     private String pickup;
-    public void setPickup(String pickup) {
-		this.pickup = pickup;
-	}
+    private String paymentUrl;
+    private String transId;
 
-	public void setDropoff(String dropoff) {
-		this.dropoff = dropoff;
-	}
+    private String dropoff;
+    private int mwst;
+    private int brutto;
+    private int netto;
+    private boolean autoOrder;
+    private boolean isCustomer;
+    private String pickupTime;
+    private int numTaxis;
+    private OrderStatus orderStatus;
 
-	private String dropoff;
-    private double mwst;
-    private double brutto;
-    private double netto;
+    public String getDateText()
+    {
+        return dateText;
+    }
+
+    public void setDateText(String dateText)
+    {
+        this.dateText = dateText;
+    }
+
     private double distance;
 
     private Date instanziated;
 
     public Booking()
     {
+        instanziated = new Date();
     }
 
     private static final long serialVersionUID = 1L;
@@ -65,8 +76,6 @@ public class Booking<T extends Info, K extends TaxiticketEntity> extends Taxitic
         this.date = date;
     }
 
-
- 
     public Date getInstanziated()
     {
         return instanziated;
@@ -76,7 +85,6 @@ public class Booking<T extends Info, K extends TaxiticketEntity> extends Taxitic
     {
         this.instanziated = instanziated;
     }
-
 
     public String getName()
     {
@@ -98,19 +106,45 @@ public class Booking<T extends Info, K extends TaxiticketEntity> extends Taxitic
         this.email = email;
     }
 
+    public String getTransId()
+    {
+        return transId;
+    }
+
+    public void setTransId(String transId)
+    {
+        this.transId = transId;
+    }
+
+    public void setPickup(String pickup)
+    {
+        this.pickup = pickup;
+    }
+
+    public void setDropoff(String dropoff)
+    {
+        this.dropoff = dropoff;
+    }
 
     public static Booking getBooking(BookingInfo bookingInfo)
     {
         Booking booking = new Booking();
         booking.setDate(bookingInfo.getDate());
+        booking.setDateText(bookingInfo.getDateText());
         booking.setEmail(bookingInfo.getEmail());
         booking.setName(bookingInfo.getName());
         booking.setPickup(bookingInfo.getPickup());
         booking.setDropoff(bookingInfo.getDropoff());
-        booking.setIBAN(bookingInfo.getIban());
         booking.brutto = bookingInfo.getPrice()[0];
         booking.mwst = bookingInfo.getPrice()[1];
         booking.netto = bookingInfo.getPrice()[2];
+        booking.paymentUrl = bookingInfo.getPaymentUrl();
+        booking.transId = bookingInfo.getTransID();
+        booking.pickupTime = bookingInfo.getPickupTime();
+        booking.autoOrder = bookingInfo.isAutoOrder();
+        booking.numTaxis = bookingInfo.getNumTaxis();
+        booking.orderStatus = bookingInfo.getOrderStatus();
+        booking.isCustomer = bookingInfo.isCustomer();
 
         return booking;
     }
@@ -126,22 +160,22 @@ public class Booking<T extends Info, K extends TaxiticketEntity> extends Taxitic
         BookingInfo bookingInfo = new BookingInfo();
         bookingInfo.setId(key.getId());
         bookingInfo.setDate(getDate());
+        bookingInfo.setDateText(getDateText());
         bookingInfo.setEmail(getEmail());
         bookingInfo.setName(getName());
         bookingInfo.setPickup(pickup);
         bookingInfo.setDropoff(dropoff);
-        double[] price = {brutto,mwst,netto};
+        int[] price = { brutto, mwst, netto };
         bookingInfo.setPrice(distance, price);
+        bookingInfo.setPaymentUrl(paymentUrl);
+        bookingInfo.setTransID(transId);
+        bookingInfo.setPickupTime(pickupTime);
+        bookingInfo.setAutoOrder(autoOrder);
+        bookingInfo.setNumTaxis(numTaxis);
+        bookingInfo.setOrderStatus(orderStatus);
+        bookingInfo.setCustomer(isCustomer);
         return bookingInfo;
     }
-
-
-    public void setIBAN(String iban)
-    {
-        this.iban = iban;
-    }
-
-
 
     @Override
     public int compareTo(Booking other)

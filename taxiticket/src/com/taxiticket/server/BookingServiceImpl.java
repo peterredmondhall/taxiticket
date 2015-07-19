@@ -3,10 +3,8 @@ package com.taxiticket.server;
 import java.util.logging.Logger;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.paymill.models.Transaction;
 import com.taxiticket.client.service.TaxiticketService;
 import com.taxiticket.server.entity.Profile;
-import com.taxiticket.server.utils.Mailer;
 import com.taxiticket.shared.BookingInfo;
 
 /**
@@ -19,30 +17,42 @@ public class BookingServiceImpl extends RemoteServiceServlet implements
     private static final Logger logger = Logger.getLogger(BookingServiceImpl.class.getName());
 
     private final BookingManager bookingManager = new BookingManager();
-    private final PaymentManager paymentManager = new PaymentManager();
     private final ProfileManager profileManager = new ProfileManager();
+    private final CustomerManager customerManager = new CustomerManager();
+    private final ConfigManager configManager = new ConfigManager();
+    private final SofortPaymentManager sofortPaymentManager = new SofortPaymentManager();
 
     @Override
     public BookingInfo createBooking(BookingInfo bookingInfo) throws IllegalArgumentException
     {
-    	logger.info(bookingInfo.getEmail());
-    	Profile profile = profileManager.getProfile();
-    	Transaction transaction = paymentManager.pay(bookingInfo,profile);
-    	if (transaction != null)
-    	{
-			bookingInfo.setPaymentSuccessful(transaction.isSuccessful());
-			bookingInfo.setPaymentResponseCode(transaction.getResponseCodeDetail());
-			logger.info("transaction success: "+transaction.isSuccessful());
-			logger.info("transaction response detail: "+transaction.getResponseCodeDetail());
-	    	if (transaction.isSuccessful())
-	    	{
-	    		bookingInfo = bookingManager.createBooking(bookingInfo);
-	    		bookingInfo.setPaymentSuccessful(true);
-	    		Mailer.send(bookingInfo,profile,Mailer.CONFIRMATION);
-	    	}
-    	}
-    	return bookingInfo;
+        BookingInfo customer = customerManager.getCustomer(bookingInfo);
+        bookingInfo = bookingManager.createBooking(bookingInfo);
+        Profile profile = profileManager.getProfile();
+        if (customer.isCustomer())
+        {
+            logger.info(bookingInfo.getEmail());
+            bookingInfo.setPaymentResponseCode("");
+            logger.info("transaction success: " + true);
+            bookingInfo = bookingManager.createBooking(bookingInfo);
+        }
+        else
+        {
+            sofortPaymentManager.initSofortPayment(bookingInfo, configManager.getConfig(), profile);
+            bookingManager.updateBooking(bookingInfo, BookingManager.Update.TransId);
+
+        }
+
+        return bookingInfo;
     }
 
+    @Override
+    public BookingInfo check(BookingInfo bookingInfo) throws IllegalArgumentException
+    {
 
+        logger.info(bookingInfo.getEmail());
+        Profile profile = profileManager.getProfile();
+//        bookingInfo = paymentManager.getToken(bookingInfo, profile);
+        bookingInfo = customerManager.getCustomer(bookingInfo);
+        return bookingInfo;
+    }
 }

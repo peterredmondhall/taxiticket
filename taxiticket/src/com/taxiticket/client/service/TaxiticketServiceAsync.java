@@ -8,7 +8,11 @@ import com.taxiticket.shared.BookingInfo;
  */
 public interface TaxiticketServiceAsync
 {
+
     void createBooking(BookingInfo bookingInfo, AsyncCallback<BookingInfo> callback)
+            throws IllegalArgumentException;
+
+    void check(BookingInfo bookingInfo, AsyncCallback<BookingInfo> callback)
             throws IllegalArgumentException;
 
 }

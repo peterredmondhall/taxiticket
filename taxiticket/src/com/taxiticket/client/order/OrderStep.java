@@ -3,7 +3,6 @@ package com.taxiticket.client.order;
 import java.util.logging.Logger;
 
 import com.google.gwt.user.client.ui.Composite;
-import com.taxiticket.shared.BookingInfo;
 
 public class OrderStep implements Step
 {
@@ -13,13 +12,13 @@ public class OrderStep implements Step
 
     public OrderStep()
     {
-            ui = new OrderUi();
+        ui = new OrderUi();
     }
 
     @Override
     public String getCaption()
     {
-        return "Order";
+        return "";
     }
 
     @Override
@@ -32,8 +31,8 @@ public class OrderStep implements Step
             "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
     private static final String IBAN_PATTERN =
-    "[a-zA-Z]{2}[0-9]{2}[a-zA-Z0-9]{4}[0-9]{7}([a-zA-Z0-9]?){0,16}";
-    
+            "[a-zA-Z]{2}[0-9]{2}[a-zA-Z0-9]{4}[0-9]{7}([a-zA-Z0-9]?){0,16}";
+
     public static boolean isEmailValid(String email)
     {
         boolean result = false;
@@ -54,8 +53,9 @@ public class OrderStep implements Step
         return result;
     }
 
-	public void setStatus(BookingInfo bookingInfo) {
-		ui.setStatus(bookingInfo);		
-	}
+    public void updateStatus(OrderUi.Status status)
+    {
+        ui.updateStatus(status);
+    }
 
 }

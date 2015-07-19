@@ -16,22 +16,45 @@ public class Config implements Serializable
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Key key;
-    private String privateKey;
-	private String publicKey;
-    private Boolean active;
-    
-    public String getPrivateKey() {
-		return privateKey;
-	}
-	public void setPrivateKey(String privateKey) {
-		this.privateKey = privateKey;
-	}
-	public String getPublicKey() {
-		return publicKey;
-	}
-	public void setPublicKey(String publicKey) {
-		this.publicKey = publicKey;
-	}
+    private String url = "http://127.0.0.1:8888";
+    private Boolean active = false;
+    private int customerId = 113494;
+    private int projectId = 233785;
+    private String apiKey = "c61bdad24a9ea73ec6a77a7b9684a694";
 
+    public int getCustomerId()
+    {
+        return customerId;
+    }
+
+    public int getProjectId()
+    {
+        return projectId;
+    }
+
+    public String getApiKey()
+    {
+        return apiKey;
+    }
+
+    public String getUrl()
+    {
+        return url;
+    }
+
+    public void setUrl(String url)
+    {
+        this.url = url;
+    }
+
+    public Boolean getActive()
+    {
+        return active;
+    }
+
+    public void setActive(Boolean active)
+    {
+        this.active = active;
+    }
 
 }

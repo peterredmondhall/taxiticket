@@ -6,39 +6,48 @@ public class BookingInfo extends Info
 {
     private static final long serialVersionUID = 1L;
 
+    public enum OrderStatus
+    {
+        ABSENT,
+        WAITING,
+        CONFIRMED
+    }
+
     private Date date;
+
+    private String dateText;
 
     private String name;
     private String email;
-    private String iban;
     private String pickup;
+    private String pickupTime;
     private String dropoff;
- 
-	private double[] price;
-	private Long id;
+    private String orderLink;
+    private String token;
+    private String paymentUrl;
+    private String transID;
+    private boolean autoOrder;
+    private int numTaxis = 1;
 
-	private boolean paymentSuccessful;
-	private String paymentResponseCode;
-	
-	
+    private boolean customer;
 
-    public boolean isPaymentSuccessful() {
-		return paymentSuccessful;
-	}
+    private int[] price;
+    private Long id;
+    private OrderStatus orderStatus;
 
-	public void setPaymentSuccessful(boolean paymentSuccessful) {
-		this.paymentSuccessful = paymentSuccessful;
-	}
+    private String paymentResponseCode;
 
-	public String getPaymentResponseCode() {
-		return paymentResponseCode;
-	}
+    public String getPaymentResponseCode()
+    {
+        return paymentResponseCode;
+    }
 
-	public void setPaymentResponseCode(String paymentResponseCode) {
-		this.paymentResponseCode = paymentResponseCode;
-	}
+    public void setPaymentResponseCode(String paymentResponseCode)
+    {
+        this.paymentResponseCode = paymentResponseCode;
+    }
 
-	@Override
+    @Override
     public Long getId()
     {
         return id;
@@ -92,50 +101,153 @@ public class BookingInfo extends Info
         this.email = email;
     }
 
-    public String getIban() {
-		return iban;
-	}
-
-	public void setIban(String iban) {
-		this.iban = iban;
-	}
-
-
     public String getOrderNo()
     {
         int len = id.toString().length();
         return id.toString().substring(len - 5, len - 1);
     }
 
-	public void setPrice(double distance, double[] price) {
-		this.price = price;
-		this.distance = distance;		
-	}
+    public void setPrice(double distance, int[] price)
+    {
+        this.price = price;
+        this.distance = distance;
+    }
 
-	   public String getPickup() {
-			return pickup;
-		}
+    public String getPickup()
+    {
+        return pickup;
+    }
 
-		public void setPickup(String pickup) {
-			this.pickup = pickup;
-		}
+    public void setPickup(String pickup)
+    {
+        this.pickup = pickup;
+    }
 
-		public String getDropoff() {
-			return dropoff;
-		}
+    public String getDropoff()
+    {
+        return dropoff;
+    }
 
-		public void setDropoff(String dropoff) {
-			this.dropoff = dropoff;
-		}
+    public void setDropoff(String dropoff)
+    {
+        this.dropoff = dropoff;
+    }
 
-		private double distance;
-	    public double getDistance() {
-			return distance;
-		}
+    private double distance;
 
-		public double[] getPrice() {
-			return price;
-		}
+    public double getDistance()
+    {
+        return distance;
+    }
 
+    public int[] getPrice()
+    {
+        return price;
+    }
 
+    public String getOrderLink()
+    {
+        return orderLink;
+    }
+
+    public String getPaymentUrl()
+    {
+        return paymentUrl;
+    }
+
+    public void setPaymentUrl(String paymentUrl)
+    {
+        this.paymentUrl = paymentUrl;
+    }
+
+    public String getTransID()
+    {
+        return transID;
+    }
+
+    public void setTransID(String transID)
+    {
+        this.transID = transID;
+    }
+
+    public void setOrderLink(String orderLink)
+    {
+        this.orderLink = orderLink;
+    }
+
+    public boolean isCustomer()
+    {
+        return customer;
+    }
+
+    public void setCustomer(boolean customer)
+    {
+        this.customer = customer;
+    }
+
+    public void setToken(String token)
+    {
+        this.token = token;
+    }
+
+    public String getToken()
+    {
+        return token;
+    }
+
+    public String getDateText()
+    {
+        return dateText;
+    }
+
+    public void setDateText(String dateText)
+    {
+        this.dateText = dateText;
+    }
+
+    public void setPaymentTransId(String paymentUrl)
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    public int getNumTaxis()
+    {
+        return numTaxis;
+    }
+
+    public void setNumTaxis(int numTaxis)
+    {
+        this.numTaxis = numTaxis;
+    }
+
+    public boolean isAutoOrder()
+    {
+        return autoOrder;
+    }
+
+    public void setAutoOrder(boolean autoOrder)
+    {
+        this.autoOrder = autoOrder;
+    }
+
+    public String getPickupTime()
+    {
+        return pickupTime;
+    }
+
+    public void setPickupTime(String pickupTime)
+    {
+        this.pickupTime = pickupTime;
+    }
+
+    public OrderStatus getOrderStatus()
+    {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus)
+    {
+        this.orderStatus = orderStatus;
+    }
 }

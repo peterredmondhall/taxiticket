@@ -18,32 +18,59 @@ public class Profile implements Serializable
     private Key key;
     private boolean active = false;
     private String name;
-    private  String paymitllSecret;
-    private  String paymillPublishable;
-    
-	public void setPaymitllSecret(String paymitllSecret) {
-		this.paymitllSecret = paymitllSecret;
-	}
-	public void setPaymillPublishable(String paymillPublishable) {
-		this.paymillPublishable = paymillPublishable;
-	}
-	public boolean isActive() {
-		return active;
-	}
-	public void setActive(boolean active) {
-		this.active = active;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getPaymitllSecret() {
-		return paymitllSecret;
-	}
-	public String getPaymillPublishable() {
-		return paymillPublishable;
-	}
+    private String paymitllSecret;
+    private String paymillPublishable;
+    private String taxiFax;
+
+    public void setPaymitllSecret(String paymitllSecret)
+    {
+        this.paymitllSecret = paymitllSecret;
+    }
+
+    public void setPaymillPublishable(String paymillPublishable)
+    {
+        this.paymillPublishable = paymillPublishable;
+    }
+
+    public boolean isActive()
+    {
+        return active;
+    }
+
+    public void setActive(boolean active)
+    {
+        this.active = active;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public String getPaymitllSecret()
+    {
+        return paymitllSecret;
+    }
+
+    public String getPaymillPublishable()
+    {
+        return paymillPublishable;
+    }
+
+    public String getTaxiFax()
+    {
+        return taxiFax;
+    }
+
+    public String getSofortApiKey()
+    {
+        // TODO Auto-generated method stub
+        return "TODO";
+    }
 
 }

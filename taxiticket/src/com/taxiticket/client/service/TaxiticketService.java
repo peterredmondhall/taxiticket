@@ -12,5 +12,6 @@ public interface TaxiticketService extends RemoteService
 {
     BookingInfo createBooking(BookingInfo model) throws IllegalArgumentException;
 
+    BookingInfo check(BookingInfo model) throws IllegalArgumentException;
 
 }

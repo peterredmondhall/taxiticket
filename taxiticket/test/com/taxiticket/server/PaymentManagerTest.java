@@ -13,8 +13,7 @@ public class PaymentManagerTest
     private final LocalServiceTestHelper helper =
             new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
-    PaymentManager pm = new PaymentManager();
-
+    SofortPaymentManager manager = new SofortPaymentManager();
 
     @Before
     public void setUp()
@@ -31,7 +30,7 @@ public class PaymentManagerTest
     @Test
     public void should_create_payment()
     {
-        //pm.pay(bookingInfo, profile);
+        // pm.pay(bookingInfo, profile);
     }
 
 }

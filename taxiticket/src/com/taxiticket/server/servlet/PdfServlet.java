@@ -10,10 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.tools.ant.taskdefs.email.Mailer;
-
 import com.taxiticket.server.BookingManager;
 import com.taxiticket.server.BookingServiceImpl;
+import com.taxiticket.server.ProfileManager;
+import com.taxiticket.server.entity.Profile;
 import com.taxiticket.server.utils.PdfUtil;
 import com.taxiticket.shared.BookingInfo;
 
@@ -23,6 +23,7 @@ public class PdfServlet extends HttpServlet
      * 
      */
     private static final long serialVersionUID = 1L;
+    ProfileManager profileManager = new ProfileManager();
     BookingServiceImpl bookingService = new BookingServiceImpl();
     BookingManager bookingManager = new BookingManager();
     PdfUtil pdfUtil = new PdfUtil();
@@ -34,6 +35,8 @@ public class PdfServlet extends HttpServlet
         String order = req.getParameter("order");
 
         BookingInfo bookingInfo = bookingManager.getBookingInfo(Long.parseLong(order));
+        Profile profile = profileManager.getProfile();
+        bookingManager.sendConfirmationAndOrder(bookingInfo, profile);
         byte[] bytes = pdfUtil.generate(bookingInfo, new FileInputStream("template/Fahrtenscheck.pdf"), new FileInputStream("template/Rechnung.pdf"));
         resp.setContentType("application/pdf");
         resp.addHeader("Content-Disposition", "inline; filename=\"data.pdf\"");
@@ -45,4 +48,5 @@ public class PdfServlet extends HttpServlet
         sos.close();
 
     }
+
 }

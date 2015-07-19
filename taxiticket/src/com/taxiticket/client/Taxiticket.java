@@ -20,8 +20,6 @@ import com.taxiticket.client.service.TaxiticketServiceAsync;
 import com.taxiticket.shared.BookingInfo;
 import com.taxiticket.shared.StatInfo.Update;
 
-
-
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
@@ -36,6 +34,7 @@ public class Taxiticket implements EntryPoint
     private static Long SESSION_IDENT = Double.doubleToLongBits(Math.random());
     private Screen screen;
     public static BookingInfo BOOKINGINFO = new BookingInfo();
+
     /**
      * This is the entry point method.
      */
@@ -49,20 +48,11 @@ public class Taxiticket implements EntryPoint
 
         screen = new Screen();
 
-        orderStep = new OrderStep();
-        String shareId = Window.Location.getParameter("share");
-        String review = Window.Location.getParameter("review");
-        String nick = Window.Location.getParameter("nick");
-        String defaultuser = Window.Location.getParameter("defaultagent");
-        String routeId = Window.Location.getParameter("route");
-        
-        completeSetup(orderStep);
-        
+        completeSetup(new OrderStep());
 
     }
 
- 
-    private void collectStats(String src)
+    private void navigateToSofort(String src)
     {
         String protocol = Window.Location.getProtocol();
         String url = protocol + "//" + Window.Location.getHost() + "/stat?src=" + src + "&session=" + SESSION_IDENT;
@@ -87,31 +77,31 @@ public class Taxiticket implements EntryPoint
         {
         }
     }
-        
-        private static void showPdf(BookingInfo bookingInfo)
+
+    private static void showPdf(BookingInfo bookingInfo)
+    {
+        String protocol = Window.Location.getProtocol();
+        String url = protocol + "//" + Window.Location.getHost() + "/ticket?order=" + bookingInfo.getId();
+        RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
+
+        try
         {
-            String protocol = Window.Location.getProtocol();
-            String url = protocol + "//" + Window.Location.getHost() + "/ticket?order=" + bookingInfo.getId();
-            RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
-
-            try
+            Request response = builder.sendRequest(null, new RequestCallback()
             {
-                Request response = builder.sendRequest(null, new RequestCallback()
+                @Override
+                public void onError(Request request, Throwable exception)
                 {
-                    @Override
-                    public void onError(Request request, Throwable exception)
-                    {
-                    }
+                }
 
-                    @Override
-                    public void onResponseReceived(Request request, Response response)
-                    {
-                    }
-                });
-            }
-            catch (RequestException e)
-            {
-            }
+                @Override
+                public void onResponseReceived(Request request, Response response)
+                {
+                }
+            });
+        }
+        catch (RequestException e)
+        {
+        }
 
 //        
 //
@@ -124,56 +114,112 @@ public class Taxiticket implements EntryPoint
 //        X-AppEngine-CityLatLong        
     }
 
-
-
     private void completeSetup(Step step)
     {
-
 
         screen.init(step);
         RootPanel.get().add(screen);
 
     }
 
+    public static void sendStat(String string, Update type)
+    {
+        // TODO Auto-generated method stub
 
-	public static void sendStat(String string, Update type) {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 
+    public static void book()
+    {
+        try
+        {
+            SERVICE.createBooking(BOOKINGINFO, new AsyncCallback<BookingInfo>()
+            {
 
-	public static void book() 
-	{
-	        try
-	        {
-	            SERVICE.createBooking(BOOKINGINFO, new AsyncCallback<BookingInfo>()
-	            {
+                @Override
+                public void onSuccess(BookingInfo bookingInfo)
+                {
+                    BOOKINGINFO = bookingInfo;
+                    if (BOOKINGINFO.isCustomer())
+                    {
+                        Window.Location.assign("ticket?order=" + bookingInfo.getId());
+                    }
+                    else
+                    {
+                        Window.Location.assign(bookingInfo.getPaymentUrl());
 
-	                @Override
-	                public void onSuccess(BookingInfo bookingInfo)
-	                {
-	                	if (bookingInfo.isPaymentSuccessful())
-	                	{
-	                		//showPdf(bookingInfo);
-	                		Window.Location.assign("ticket?order="+bookingInfo.getId());
-	                	} else
-	                	{
-	                		orderStep.setStatus(bookingInfo);
-	                	}
-	                }
+                    }
+                }
 
-	                @Override
-	                public void onFailure(Throwable caught)
-	                {
-	                }
-	            });
-	        }
-	        catch (Exception ex)
-	        {
+                @Override
+                public void onFailure(Throwable caught)
+                {
+                }
+            });
+        }
+        catch (Exception ex)
+        {
 
-	        }
-	    
-		
-	}
+        }
+
+    }
+
+//    public static void check()
+//    {
+//        logger.info(BOOKINGINFO.toString());
+//
+//        try
+//        {
+//            SERVICE.check(BOOKINGINFO, new AsyncCallback<BookingInfo>()
+//            {
+//
+//                @Override
+//                public void onSuccess(BookingInfo bookingInfo)
+//                {
+//                    BOOKINGINFO = bookingInfo;
+//                    orderStep.updateStatus(Status.CHECK);
+//                }
+//
+//                @Override
+//                public void onFailure(Throwable caught)
+//                {
+//                    logger.severe(caught.getMessage());
+//                }
+//            });
+//        }
+//        catch (Exception ex)
+//        {
+//            logger.severe(ex.getMessage());
+//        }
+//
+//    }
+
+//    public static void pay()
+//    {
+//        logger.info(BOOKINGINFO.toString());
+//
+//        try
+//        {
+//            SERVICE.getPaymentUrl(BOOKINGINFO, new AsyncCallback<String>()
+//            {
+//
+//                @Override
+//                public void onSuccess(String paymentUrl)
+//                {
+//                    Window.Location.assign(paymentUrl);
+//                }
+//
+//                @Override
+//                public void onFailure(Throwable caught)
+//                {
+//                    logger.severe(caught.getMessage());
+//                }
+//            });
+//        }
+//        catch (Exception ex)
+//        {
+//            logger.severe(ex.getMessage());
+//        }
+//
+//    }
 
 }
